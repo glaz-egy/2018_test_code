@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>様々な光</title>
+  <link rel="stylesheet" type="text/css" href="style2.css">
+</head>
+<body>
+<section class="contents">
+<h2 id="chap01">様々な光</h2>
+
+<h3>● 影を作る光</h3>
+
+<p>影を作るためには、少なくとも 4 つのオブジェクトのプロパティを有効 true にする必要がある。
+このれらプロパティはデフォルト無効 false となっているからである。</p>
+<ol>
+<li>レンダラー（描画を実行するオブジェクト）に対して、
+<pre>renderer.shadowMapEnable = true</pre>
+</li>
+<li>光源に対して、
+<pre>light.castShadow = true</pre>
+</li>
+<li>影を作り出す物体（たとえば cube）に対して、
+<pre>cube.castShadow = true</pre>
+</li>
+<li>影を映す物体（たとえば plane）に対して、
+<pre>plane.receiveShadow = true</pre>
+</li>
+</ol>
+
+<p><font color="red">ところが</font>、以上の設定をしても影が描かれないことがある。
+これは、影がカンバスの外部に作られ、だからカンバスの内部に描かれない状況である。
+影をカンバス内に作るためには、shadowCamera を適切に設定する必要がある。
+OpenGL の内部で影を作る計算は、DirectionalLight でなく shadowCamera に基づいて行われるからである。<br>
+shadowCamera は、OrthographicCamera の一種なので、次のプロパティを設定する。</p>
+<table>
+<tr><th>property</th><th>default</th></tr>
+<tr><td>shadowCameraNear</td><td>50</td></tr>
+<tr><td>shadowCameraFar </td><td>5000</td></tr>
+<tr><td>shadowCameraRight</td><td>500</td></tr>
+<tr><td>shadowCameraLeft </td><td>-500</td></tr>
+<tr><td>shadowCameraTop  </td><td>500</td></tr>
+<tr><td>shadowCameraBottom</td><td>-500</td></tr>
+</table>
+
+<p>一つの物体が、影を作り出す物体であると同時に影を映す物体であることは可能である。
+たとえば物体を sphere とする場合、
+<pre>
+sphere.castShadow = true
+sphere.receiveShadow = true
+</pre>
+とすればよい。
+
+<h3>● スポットライト</h3>
+
+<h3>● 環境光</h3>
+
+<h3>● 点光源</h3>
+
+</body>
+</html>
+

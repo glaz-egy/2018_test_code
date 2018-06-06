@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>No-4</title>
+  <meta charset="utf-8">
+  <script src="../js/three.js"></script>
+  <style>
+    div#canvas{ width: 1900px; height: 1000px; }
+  </style>
+
+  <script>
+    var scene
+    function makeSphere(x, y, z, radi,col)
+    {
+      var geometry, material, sphere;
+      geometry = new THREE.SphereGeometry(radi, 100, 100);
+	  material = new THREE.MeshLambertMaterial({ color: col });
+      sphere = new THREE.Mesh(geometry, material)
+      sphere.position.set(x, y, z);
+      return sphere;
+    }
+
+    function rand(max)
+    {
+      var randnum;
+      randnum = Math.floor(( Math.random() * max)-(max/2));
+      return randnum;
+    }
+    function randunsi(max)
+    {
+      var randnum;
+      randnum = Math.floor( Math.random() * max);
+      return randnum;
+    }
+	function randst(max)
+    {
+      var randnum;
+      randnum = Math.random() * max;
+      return randnum;
+    }
+    function draw() 
+    {
+      var scene, axis, camera, light, renderer;
+      var width, height;
+      scene = new THREE.Scene();
+
+      canvas = document.getElementById('canvas');
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+
+	  
+      for (var i = 0; i <100; i++){
+         scene.add(makeSphere(rand(300), rand(200), rand(100), randunsi(10), randst(0xFFFFFF)));
+      }
+	  
+      light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(300, 300, 300);
+      scene.add(light);
+ 
+      camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+      camera.position.set(30, 20, 300);
+      camera.lookAt(scene.position);
+ 
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setClearColor(0xeeeeee);
+      canvas.appendChild(renderer.domElement);
+      renderer.render(scene, camera);
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas"></div>
+  <script>draw();</script>
+</body>
+</html>
+

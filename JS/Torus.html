@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sphere</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <div id="stage"></div>
+  <script src="../js/three.js"></script>
+    
+  <script>
+    function makeSphere(scene)
+    {
+      var geometry, material, obj;
+      geometry = new THREE.SphereGeometry(7, 20, 20);
+      material = new THREE.MeshLambertMaterial({color: 0x0000ff});
+      obj = new THREE.Mesh(geometry, material);
+      scene.add(obj);
+      return scene; 
+    }
+
+    function makeTorus(scene)
+    {
+      var geometry, material, obj;
+      geometry = new THREE.TorusGeometry(10, 3, 50, 50, Math.PI);
+      material = new THREE.MeshLambertMaterial({color: 0xff0000});
+      obj = new THREE.Mesh(geometry, material);
+      scene.add(obj);
+      return scene; 
+    }
+
+    function draw() 
+    {
+      var scene, object, camera, light, renderer;
+      var width = 400, height = 400;
+ 
+      scene = new THREE.Scene();
+
+      scene = makeSphere(scene);        
+      scene = makeTorus(scene);        
+
+      light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(40, 40, 40);
+      scene.add(light);
+ 
+      camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+      camera.position.set(40, 0, 40);
+      camera.up.set(0, 0, 1);
+      camera.lookAt(scene.position);
+ 
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setClearColor(0xeeeeee);
+      document.getElementById('stage').appendChild(renderer.domElement);
+      renderer.render(scene, camera);
+    }
+      
+    draw();
+  </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>No-3</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <div id="stage"></div>
+  <script src="../js/three.js"></script>
+    
+  <script>
+	var count=0; 
+	var chain;
+    var ex, ey, ez; 
+    var camera, light, renderer,scene;
+	ex = new THREE.Vector3(0,1,0);
+
+    function makeTorus(outor)
+    {
+      var geometry, material, obj;
+      geometry = new THREE.TorusGeometry(10, 3, 50, 50);
+      material = new THREE.MeshLambertMaterial({color: 0xff0000,visible: outor});
+      obj = new THREE.Mesh(geometry, material);
+      return obj; 
+    }
+	
+	function revolution_move(ob,x,y)
+	{
+	  ob.position.set(x,y, 0);
+	  return ob;
+	}
+	
+	function revolution_move2(ob,t,x,y)
+	{
+	  var axis = new THREE.Vector3(1,0,0);
+	  axis.normalize();
+	  var q = new THREE.Quaternion();
+	  q.setFromAxisAngle(axis, Math.PI/2);
+	  ob.quaternion.copy(q);
+	  ob.position.set(x,y, 0);
+	  return ob;
+	}
+	
+	function revolution_move3(ob,t)
+	{
+	  var axis = new THREE.Vector3(1,0,0);
+	  axis.normalize();
+	  var q = new THREE.Quaternion();
+	  q.setFromAxisAngle(axis, t);
+	  ob.quaternion.copy(q);
+	  return ob;
+	}
+	
+	function rotateObject(ob,axis,angle)
+	{
+	  var q = new THREE.Quaternion();
+	  q.setFromAxisAngle(axis,angle);
+	  ob.quaternion.copy(q);
+	  return ob;
+	}
+	
+	function loop()
+	{
+	  count++;
+	  chain = rotateObject(chain,ex,count/100);
+	  renderer.clear();
+      renderer.render(scene, camera);
+      requestAnimationFrame(loop); 
+	}
+
+    function draw() 
+    {
+      var object;
+      var width = 1000, height = 1000;
+	  var dif=13;
+	  var i = 0;
+	  var chain_radius=50;
+ 
+      scene = new THREE.Scene();
+      chain = makeTorus(false);
+	  for(i=0;i<24;i++){
+	    object = makeTorus(true);
+		if(i%2==0) chain.add(revolution_move(object,chain_radius*Math.cos((Math.PI/12)*i),chain_radius*Math.sin((Math.PI/12)*i)));
+		else{
+			object = revolution_move2(object,Math.PI/2,chain_radius*Math.cos((Math.PI/12)*i),chain_radius*Math.sin((Math.PI/12)*i));
+			chain.add(revolution_move3(object,2*Math.PI-(Math.PI/12)*i));
+		}
+	  }
+	  scene.add(chain);
+	  
+	  
+
+      light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(40, 40, 40);
+      scene.add(light);
+ 
+      camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+      camera.position.set(60, 160, 160);
+      camera.up.set(0, 0, 1);
+      camera.lookAt(scene.position);
+ 
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setClearColor(0xeeeeee);
+      document.getElementById('stage').appendChild(renderer.domElement);
+      renderer.render(scene, camera);
+	  //loop();
+    }
+      
+    draw();
+  </script>
+</body>
+</html>

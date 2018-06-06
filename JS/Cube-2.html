@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>cube</title>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <div id="stage"></div>
+    <script src="../js/three.js"></script>
+    
+    <script>
+      function draw() 
+      {
+        var scene, sphere, camera, light, renderer;
+        var width = 500, height = 500;
+ 
+        scene = new THREE.Scene();
+
+        var geometry = new THREE.CubeGeometry(20, 20, 20);
+        var material = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+        var cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+/* 
+        sphere = new THREE.Mesh(
+          new THREE.SphereGeometry(100, 20, 20), 
+          new THREE.MeshLambertMaterial({color: 0x8dc3ff}) 
+        );
+        sphere.position.set(0, 0, 0);
+        scene.add(sphere);
+*/ 
+        light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(50, 20, 100);
+        scene.add(light);
+ 
+        camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+        camera.position.set(50, 50, 100);
+        camera.lookAt(scene.position);
+ 
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(width, height);
+        renderer.setClearColor(0xeeeeee);
+        document.getElementById('stage').appendChild(renderer.domElement);
+        renderer.render(scene, camera);
+      }
+      
+      draw();
+    </script>
+  </body>
+</html>

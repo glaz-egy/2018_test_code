@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>3D オブジェクトの移動</title>
+  <link rel="stylesheet" type="text/css" href="style2.css">
+</head>
+<body>
+<h2 id="chap01">3D オブジェクトの移動</h3>
+
+<h3>● 平行移動</h4>
+
+<p>すべての 3D オブジェクトは Object3D クラスをプロトタイプに持つ。<br>
+Object3D クラスには position プロパティがあり、そのデフォルトの値は Vector3(0,0,0) である。
+このベクトルは 3 次元空間の原点を意味している。<br>
+position プロパティの値を Vector3(x,y,z) にセットすることにより、
+3D オブジェクトを<b class="color">平行移動</b>することができる。
+これは原点 (0,0,0) から点 (x,y,z) への平行移動である。</p>
+
+<p>position プロパティの値をセットするには 3 つの方法がある。 
+<ul>
+<li>方法 1
+<pre>cube.position = THREE.Vector3(x, y, z);</pre></li>
+<li>方法 2
+<pre>cube.position.set(x, y, z);</pre></li>
+<li>方法 3
+<pre>
+cube.position.x = x;
+cube.position.y = y;
+cube.position.z = z;
+</pre></li>
+</ul>
+
+<h3>● 拡大縮小</h4>
+
+<p>Object3D クラスには scale プロパティがあり、そのデフォルトの値は Vector3(1,1,1) である。<br>
+このプロパティの値を Vector3(kx,ky,kz) にセットすることにより、3D オブジェクトをセットすることにより、3D オブジェクトを相似拡大または縮小することができる(x 軸方向に kx 倍、y 軸方向に ky 倍、z 軸方向に kz 倍する）。 
+<pre>cube.scale.set(kx,ky,kz)</pre>
+
+<h3>● 回転</h4>
+
+<p>3D オブジェクトを回転するには、クォータニオン（四元数）を用いる方法と、オイラー角を用いる方法の二つがある。
+<b class="color">クォータニオン</b>を用いる方法がデフォルトなので、これだけを説明する。</p>
+
+<p>具体的にはたとえばオブジェクト cube を、回転軸ベクトル (x,y,z)、回転角度 theta で回転させるときは、
+次のようにする。</p>
+
+<pre>
+var axis = new THREE.Vector3(x,y,z);
+axis.normalize();
+var q = new THREE.Quaternion();
+q.setFromAxisAngle(axis, theta);
+cube.quaternion.copy(q);
+</pre>
+
+<p><b>例</b>　立方体の一つの頂点 A を、それが新しい座標軸上に置かれるように回転させてみよう。</p>
+
+<p>立方体の辺の長さを 2 とすると、CubeGeometry が作る立方体の 8 個の頂点の座標は <br>
+ (1,1,1), (1,-1,1), (-1,-1,1), (-1,1,1), (1,1,-1), (1,-1,-1), (-1,-1,-1), (-1,1,-1) となっている。
+
+A = (1,1,1) であるとする。補助的に、点 O = (0,0,0), N = (0,0,1), P = (1/sqrt(2), -1/sqrt(2), 0) を考える。
+立方体を、ベクトル OP を回転軸として適当な角度 θ 回転させて、頂点 A は直線 ON （すなわち z 軸）の上に乗るようにする。
+角度 θ は ∠ AON に等しいから、ベクトル OA とベクトル ON の内積を計算すれば求めることができる。
+だから cos θ = 1/sqrt(3) がわかる。 </p>
+
+<h3>● 問題</h4>
+
+<p><b>問題 1</b>　5 つの直方体を組み合わせて、枡（水を入れることのできる容器）を作成せよ。</p>
+
+<p><b>問題 2</b>　立方体の一つの辺の中点を、それが新しい座標軸上に置かれるように回転せよ。</p>
+
+<p><b>問題 3</b>　2 つの同じ大きさ・形のトーラスを、一方の腕が他方の穴を通るように配置せよ。</p>
+
+<p><b>問題 4</b>　半径・中心・表面の色をランダムに決めて 100 個の球を置け。</p>
+
+</body>
+</html>
+

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>枡回転</title>
+  <meta charset="utf-8">
+  <script src="../js/three.js"></script>
+  <style>
+    div#canvas{ width: 512px; height: 512px; }
+  </style>
+
+  <script>
+    var count=0; 
+	var ex,ey,ez;
+	var squares;
+	var camera, light, renderer,scene;
+	ex = new THREE.Vector3(1,0,0);
+    ey = new THREE.Vector3(0,1,0);
+    ez = new THREE.Vector3(0,0,1);
+	
+    function makeCube(x,y,outor)
+    {
+      var geometry, material, cube;
+      geometry = new THREE.CubeGeometry(x, y, 2);
+      material = new THREE.MeshLambertMaterial({ color: 0xDD9F21, visible: outor});
+      cube = new THREE.Mesh(geometry, material);
+      return cube;
+    }
+	
+	function rotateObject(ob,axis,angle)
+	{
+	  var q = new THREE.Quaternion();
+	  q.setFromAxisAngle(axis,angle);
+	  ob.quaternion.copy(q);
+	  return ob;
+	}
+	
+	function move(obj,x,y,z,turn,t_x,t_y,t_z)
+	{
+	  var axis = new THREE.Vector3(t_x,t_y,t_z);
+	  var q = new THREE.Quaternion();
+	  obj.position.set(x,y,z);
+	  axis.normalize();
+	  q.setFromAxisAngle(axis, turn);
+	  obj.quaternion.copy(q);
+	  return obj;
+	}
+	
+	function loop()
+	{
+	  count++;
+	  squares = rotateObject(squares,ex,count/100);
+	  //squares = rotateObject(squares,ey,count/100);
+	  //squares = rotateObject(squares,ez,count/100);
+	  renderer.clear();
+      renderer.render(scene, camera);
+      requestAnimationFrame(loop); 
+	}
+	
+    function draw() 
+    {
+      var axis;
+      var width, height;
+	  var object;
+ 
+      scene = new THREE.Scene();
+
+      canvas = document.getElementById('canvas');
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+	  
+      squares = makeCube(20,20,false);
+	  object = makeCube(20,20,true);
+	  object = move(object,0,-7,0,Math.PI/2,10,0,0);
+	  squares.add(object);
+	  object = makeCube(20,15,true);
+	  object = move(object,0,0,9,0,0,0,0);
+	  squares.add(object);
+	  object = makeCube(20,15,true);
+	  object = move(object,0,0,-9,0,0,0,0);
+	  squares.add(object);
+	  object = makeCube(20,15,true);
+	  object = move(object,9,0,0,Math.PI/2,0,10,0);
+	  squares.add(object);
+	  object = makeCube(20,15,true);
+	  object = move(object,-9,0,0,Math.PI/2,0,10,0);
+	  squares.add(object);
+	  scene.add(squares);
+
+      light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(40, 60, 60);
+      scene.add(light);
+ 
+      camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+      camera.position.set(30, 20, 50);
+      camera.lookAt(scene.position);
+ 
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setClearColor(0xeeeeee);
+      canvas.appendChild(renderer.domElement);
+      //renderer.render(scene, camera);
+	  loop();
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas"></div>
+  <script>draw();</script>
+</body>
+</html>
+

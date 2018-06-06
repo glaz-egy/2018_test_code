@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>3 次元オブジェクトの描画</title>
+  <link rel="stylesheet" type="text/css" href="style2.css">
+</head>
+<body>
+<h2>3 次元オブジェクトの描画</h3>
+
+<h3>● 立方体の描画</h4>
+<ul>
+<li><b>平行光源の設定</b><br>
+平行光源とは、無限の彼方にある光源のことで、そこから来る光線たちは互いに平行となる。
+太陽から発して鹿児島に降り注ぐ光線は、シアトルに降り注ぐ光線は平行である状況を思い浮かべればよい。
+平行光源の設定するには、
+<pre>DirectionalLight(color, intensity)</pre>
+とする。 ここで color には光源の色の RGB 成分を 16 進数で指定する。
+また intensity は光源の光の強度である。<br>
+平行光源の方向は
+<pre>position.set(x, y, z)</pre>
+メソッドにより指定する。光源の方向とは、ベクトルの方向のことであるから、たとえば
+position.set(50, 20, 100) と position.set(5, 2, 10) は同じである。
+<li><b>形状の設定</b><br>
+立方体（一般には直方体）を作成するには 
+<pre>CubeGeometry(edge_x, edge_y, edge_z)</pre>
+を用いる。引数はそれぞれ x 軸に平行な辺、y 軸に平行な辺、z 軸に平行な辺の長さを表す。
+<li><b>材質の設定</b><br>
+拡散反射（<u>鏡面でない面</u>での光の反射）する際には、ランバートの法則が成り立つことが多い。
+この法則にしたがう材質を設定するために、
+<pre>MeshLambertMaterial( {property1: value1, property2: value2, ...} )</pre>
+を用いる。引数には次のものを指定できる。
+<table class="border">
+<tr><th>プロパティ</th><th>データ型</th><th>デフォルト</th><th>説明</th></tr>
+<tr><td>color</td><td>16 進整数</td><td>0xffffff</td><td>拡散光の色</td></tr>
+<tr><td>ambient</td><td>16 進整数</td><td>0xffffff</td><td>環境光の色</td></tr>
+<tr><td>emissive</td><td>16 進整数</td><td>0x000000</td><td>発光色</td></tr>
+<tr><td>map</td><td>texure</td><td>null</td><td>テクスチャー</td></tr>
+<tr><td>wireframe</td><td>boolean</td><td>false</td><td>針金細工にするか ?</td></tr>
+<tr><td>wireframeLineWidth</td><td>float</td><td>1.0</td><td>針金の太さ</td></tr>
+<tr><td>transparent</td><td>boolean</td><td>false</td><td>透明にするか ?</td></tr>
+<tr><td>opacity</td><td>float</td><td>1.0</td><td>不透明度</td></tr>
+<tr><td>side</td><td>THREE.FrontSide</td><td>THREE.FrontSide</td><td>表の面だけを描画</td></tr>
+<tr><td>    </td><td>THREE.BackSide</td><td></td><td>裏面だけを描画</td></tr>
+<tr><td>    </td><td>THREE.DoubleSide</td><td></td><td>表面と裏面の両方を描画</td></tr>
+<tr><td>visible</td><td>boolean</td><td>true</td><td>表示するか ?</td></tr>
+<tr><td>vertexColors</td><td>THREE.NoColors</td><td>THREE.NoColors</td><td>color の指定方法</td></tr>
+</table>
+<li><b>3 次元オブジェクトの作成</b><br>
+形状 geometry と材質 material を用いて、
+<pre>Mesh( geometry, material )</pre>
+として作成する。
+</ul>
+<br>
+
+<p class=small><b>問<b></p>
+<div class=question>
+(1) 立方体のサイズと材質の色を、適当に変更してみよ<br>
+(2) 平行光源の色が 0x00ffff、材質の色が 0xff0000 であるとき、物体の色はどのように見えるか<br>
+(3) 立方体をワイヤーフレーム表示せよ<br>
+(4) 立方体を半透明にせよ
+</div>
+
+<h3>● 球の描画</h4>
+
+球を作成するには 
+<pre>
+SphereGeometry( radius, segmentsWidth, segmentsHeight, 
+                phiStart, phiEnd, thetaStart, thetaEnd )
+</pre>
+を用いる。引数の意味は以下の通り。
+<table class="border">
+<tr><th>引数</th><th>データ型</th><th>デフォルト</th><th>説明</th></tr>
+<tr><td>radius</td><td>float</td><td>50</td><td>半径</td></tr>
+<tr><td>segmentsWidth</td><td>int</td><td>8</td><td>経度の分割数、最小値は 3</td></tr>
+<tr><td>segmentsHeight</td><td>int</td><td>6</td><td>緯度の分割数、最小値は 2</td></tr>
+<tr><td>phiStart</td><td>float</td><td>0</td><td>経度の初期角度</td></tr>
+<tr><td>phiLength</td><td>float</td><td>Math.PI * 2</td><td>経度の増分</td></tr>
+<tr><td>thetaStart</td><td>float</td><td>0</td><td>緯度の初期角度</td></tr>
+<tr><td>thetaLength</td><td>float</td><td>Math.PI</td><td>緯度の増分</td></tr>
+</table>
+ただし経度と緯度は地理学で用いられているものでなく、数学の極座標系で用いられているものであることに注意。
+
+<p><b>問<b></p>
+<div class=question>
+(1) 経度の分割数と緯度の分割数を減らしてみよ<br>
+(2) 半球を描画せよ（経度の増分または緯度の増分を適当に与えよ）<br>
+(3) 球をワイヤーフレーム表示せよ<br>
+</div>
+
+<h3>● 平面の描画</h4>
+
+平面を作成するには 
+<pre>
+PlaneGeometry( width, height, widthSegments, heightSegments )
+</pre>
+を用いる。引数の意味は以下の通り。
+<table class="border">
+<tr><th>引数</th><th>データ型</th><th>デフォルト</th><th>説明</th></tr>
+<tr><td>width</td><td>float</td><td></td><td>平面の x 軸方向</td></tr>
+<tr><td>height</td><td>float</td><td></td><td>平面の y 軸方向</td></tr>
+<tr><td>widthSegments</td><td>int</td><td>1</td><td>x 軸方向の分割数</td></tr>
+<tr><td>heightSegments</td><td>int</td><td>1</td><td>y 軸方向の分割数</td></tr>
+</table>
+
+<h3>● 円柱の描画</h4>
+
+円柱を作成するには 
+<pre>
+CylinderGeometry( radiusTop, radiusBottom, height,
+                  radiusSegments, heightSegments, openEnded )
+</pre>
+を用いる。引数の意味は以下の通り。
+<table class="border">
+<tr><th>引数</th><th>データ型</th><th>デフォルト</th><th>説明</th></tr>
+<tr><td>radiusTop</td><td>float</td><td>20</td><td>上面の半径</td></tr>
+<tr><td>radiusBottom</td><td>float</td><td>20</td><td>底面の半径</td></tr>
+<tr><td>height</td><td>float</td><td>100</td><td>高さ</td></tr>
+<tr><td>radiusSegments</td><td>int</td><td>8</td><td>半径の分割数</td></tr>
+<tr><td>heightSegments</td><td>int</td><td>1</td><td>高さの分割数</td></tr>
+<tr><td>openEnded</td><td>boolean</td><td>false</td><td>上面と底面を付けるか ?</td></tr>
+</table>
+
+<p><b>問<b></p>
+<div class=question>
+(1) radiusTop を適当に与えて円錐を描画せよ<br>
+(2) 上面と底面が付いていない「筒」を描け。ただし、筒の内側も見えるようにせよ。<br>
+</div>
+
+<h3>● トーラスの描画</h4>
+
+トーラスを作成するには 
+<pre>
+TorusGeometry( radius, tube, radialSegments, tubeSegments, arc )
+</pre>
+を用いる。引数の意味は以下の通り。
+<table class="border">
+<tr><th>引数</th><th>データ型</th><th>デフォルト</th><th>説明</th></tr>
+<tr><td>radius</td><td>float</td><td>100</td><td>トーラスの半径</td></tr>
+<tr><td>tube</td><td>float</td><td>40</td><td>管の半径</td></tr>
+<tr><td>radialSegments</td><td>int</td><td>8</td><td>半径の分割数</td></tr>
+<tr><td>tubularSegments</td><td>int</td><td>6</td><td>管の分割数</td></tr>
+<tr><td>arc</td><td>float</td><td>Math.PI * 2</td><td>ドーナツをどれだけ齧るか ?</td></tr>
+</table>
+
+</body>
+</html>
+

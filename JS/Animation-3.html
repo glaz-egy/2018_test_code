@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>球の雲</title>
+  <meta charset="utf-8">
+  <style>
+    div#canvas{ width: 512px; height: 512px; }
+  </style>
+
+  <script src="../js/three.js"></script>
+
+  <script>
+    var container, stats;
+    var camera, scene, renderer;
+    var geometry, group;
+    var mouseX = 0, mouseY = 0;
+    var windowHalfX = window.innerWidth / 2;
+    var windowHalfY = window.innerHeight / 2;
+    var spheres = {};
+
+    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+
+    function init() {
+      canvas = document.getElementById('canvas');
+      //container = document.createElement( 'div' );
+      //document.body.appendChild( container );
+
+      camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 10000 );
+      camera.up.set(0, 0, 1);
+      camera.position.x = 500;
+
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color( 0xffffff );
+      //scene.fog = new THREE.Fog( 0xffffff, 1, 10000 );
+
+      var geometry = new THREE.SphereGeometry( 80, 20, 20 );
+      var material = new THREE.MeshNormalMaterial();
+
+      var costheta, sintheta, phi;
+      var r = 1000;
+      for ( var i = 0; i < 1000; i ++ ) {
+        spheres[i] = new THREE.Mesh( geometry, material );
+        costheta = 1.0 - 2.0 * Math.random();
+        sintheta = Math.sqrt(1.0 - costheta * costheta);
+        phi = 2.0 * Math.PI * Math.random();
+        spheres[i].position.x = r * sintheta * Math.cos(phi);
+        spheres[i].position.y = r * sintheta * Math.sin(phi);;
+        spheres[i].position.z = r * costheta;
+        scene.add(spheres[i]); 
+      }
+
+      renderer = new THREE.WebGLRenderer();
+      renderer.setPixelRatio( window.devicePixelRatio );
+      renderer.setSize( window.innerWidth, window.innerHeight );
+      canvas.appendChild( renderer.domElement );
+      //container.appendChild( renderer.domElement );
+    }
+
+    function onDocumentMouseMove(event) {
+      mouseX = ( event.clientX - windowHalfX ) * 10;
+      mouseY = ( event.clientY - windowHalfY ) * 10;
+    }
+
+    function animate() {
+      requestAnimationFrame( animate );
+
+      camera.position.x += ( mouseX - camera.position.x ) * .05;
+      camera.position.y += ( - mouseY - camera.position.y ) * .05;
+      camera.lookAt( scene.position );
+
+      renderer.render( scene, camera );
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas"></div>
+  <script>
+    init();
+    animate();
+  </script>
+
+</body>
+</html>

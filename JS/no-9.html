@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>立方体の連続回転</title>
+  <meta charset="utf-8">
+  <script src="../js/three.js"></script>
+  <style>
+    div#canvas{ width: 512px; height: 512px; }
+  </style>
+
+  <script>
+    var scene;
+    var cylin;
+    var radius = 40;
+    var height = radius*Math.sqrt(3)
+    var vartical = (height/2)/2
+    var horizontal = -vartical*Math.sqrt(3)
+    var step = 0;
+    var ex, ey, ez; 
+    var camera, light, renderer;
+
+    function makeCylinder(a, or)
+    {
+      var geometry, material, cube;
+      geometry = new THREE.CylinderGeometry(radius, 0.5, height, 20);
+      material = new THREE.MeshNormalMaterial();
+      cylinder = new THREE.Mesh(geometry, material);
+      return cylinder;
+    }
+	
+	function makePlane()
+	{
+	  var geometry, material, plane;
+	  geometry = new THREE.PlaneGeometry(1000, 1000);
+      material = new THREE.MeshNormalMaterial();
+	  plane = new THREE.Mesh(geometry, material);
+	  return plane;
+	}
+	
+	function makeCube(a, or)
+    {
+      var geometry, material, cube;
+      geometry = new THREE.CubeGeometry(a,a,a);
+      material = new THREE.MeshNormalMaterial({visible: or});
+      cube = new THREE.Mesh(geometry, material);
+      return cube;
+    }
+
+    function rotateObject(obj, st)
+    {
+      var axis = new THREE.Vector3(Math.sin(st), 0, -Math.cos(st));
+      var q = new THREE.Quaternion();
+      axis.normalize();
+      q.setFromAxisAngle(axis, -(Math.PI)/3);
+      obj.quaternion.copy(q);
+      return obj;
+    }
+	
+	function revolution_move3(ob,t)
+	{
+	  var axis = new THREE.Vector3(1,0,0);
+	  axis.normalize();
+	  var q = new THREE.Quaternion();
+	  q.setFromAxisAngle(axis, t);
+	  ob.quaternion.copy(q);
+	  return ob;
+	}
+	
+    function animate() 
+    {
+      var axis;
+      var width, height;
+	  var plane;
+      scene = new THREE.Scene();
+
+      canvas = document.getElementById('canvas');
+      width = canvas.clientWidth;
+      height = canvas.clientHeight;
+
+      axis = new THREE.AxesHelper(100);
+      scene.add(axis);
+      axis = new THREE.AxesHelper(300);
+      scene.add(axis);
+
+      ex = new THREE.Vector3(1,0,0);
+      ey = new THREE.Vector3(0,1,0);
+      ez = new THREE.Vector3(0,0,1);
+
+      plane = makePlane();
+	  plane = revolution_move3(plane, -Math.PI/2)
+	  //plane.position.set(0,0,0)
+      scene.add(plane);
+	  cylin = makeCylinder();
+	  //cylin = revolution_move3(cylin, (Math.PI*2)/3);
+	  //cylin.position.set(0, vartical, horizontal);
+	  //cube = makeCube(10,false);
+	  //cube.add(cylin);
+	  //scene.add(cube);
+      scene.add(cylin);
+
+      light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(40, 60, 60);
+      scene.add(light);
+ 
+      camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+      camera.position.set(30, 20, 500);
+      camera.lookAt(scene.position);
+ 
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(width, height);
+      renderer.setClearColor(0xeeeeee);
+      canvas.appendChild(renderer.domElement);
+      renderer.render(scene, camera);
+
+      loop();
+    }
+
+    function loop()
+    {
+      step++;
+      cylin = rotateObject(cylin, step/100);
+      cylin.position.set(horizontal*Math.cos(step/100), vartical, horizontal*Math.sin(step/100));
+      renderer.clear();
+      renderer.render(scene, camera);
+      requestAnimationFrame(loop);
+    }
+  </script>
+</head>
+<body>
+  <div id="canvas"></div>
+  <script>animate();</script>
+</body>
+</html>

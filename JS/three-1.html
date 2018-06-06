@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Three.js の基本形</title>
+  <link rel="stylesheet" type="text/css" href="style2.css">
+</head>
+<body>
+<section class="contents">
+<h2>Three.js の基本形</h3>
+
+<h3>● HTML 文書の全体構造</h4>
+<ul>
+  <li><b>head 部分においてライブラリ three.js を読み込む</b>
+<pre>&lt;script src="../js/three.js"&gt;&lt;/script&gt;</pre>
+  <li><b>head 部分において div 要素のサイズを指定する</b>
+<pre>&lt;style&gt;div#canvas{ width: 500px; height: 500px; }&lt;/style&gt;</pre>
+  <li><b>head 部分において javescript のプログラムを書く</b><br>
+プログラムの中に描画関数を定義する（ここでは描画関数を draw としている）
+  <li><b>body 部分に div 要素を追加</b>
+<pre>&lt;div id="canvas"&gt;&lt;/div&gt;</pre>
+div 要素の名前はかってに付けてよい（ここでは canvas としている）
+  <li><b>body 部分において関数 draw を実行する</b>
+<pre>&lt;script&gt;draw();&lt;/script&gt;</pre>
+</ul>
+
+<h3>● 描画関数</h4>
+<ol>
+<li><b>シーンオブジェクトの作成<b>
+<pre>scene = new THREE.Scene();</pre>
+Three.js においてシーンオブジェクトは、3 次元空間そのものを意味する。
+シーンオブジェクトに含めた物体だけが描画の対象となる。  
+<li><b>カンバスの用意<b>
+<pre>
+canvas = document.getElementById('canvas');
+width = canvas.clientWidth;
+height = canvas.clientHeight;
+</pre>
+<li><b>カメラの作成<b>
+<pre>
+camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+camera.position.set(50, 50, 100);
+camera.lookAt(scene.position);
+</pre>
+ここでは、透視投影をするためのカメラを設定する。
+<pre>PerspectiveCamera( fov, aspect, near, far )</pre>
+<table class="border">
+<tr><th>引数</th><th>データ型</th><th>デフォルト</th><th>説明</th></tr>
+<tr><td>fov</td><td>float</td><td>50</td><td>視野角（field of view）、0 度以上 90 度以下</td></tr>
+<tr><td>aspect</td><td>float</td><td>1</td><td>横と縦の比</td></tr>
+<tr><td>near</td><td>float</td><td>0.1</td><td>カメラから視体積の手前までの距離</td></tr>
+<tr><td>far</td><td>float</td><td>1000</td><td>カメラから視体積の奥までの距離</td></tr>
+</table>
+<br>
+<li><b>軸オブジェクトの追加<b>
+<pre>
+axis = new THREE.AxisHelper(50);
+scene.add(axis);
+axis.position.set(0, 0, 0);
+</pre>
+軸オブジェクトは仮想 3 次元空間の座標軸を示すために、補助的に用いられる。
+<li><b>レンダラーの作成<b>
+<pre>
+renderer = new THREE.WebGLRenderer({antialias: true});
+renderer.setSize(width, height);
+renderer.setClearColor(0xeeeeee);
+canvas.appendChild(renderer.domElement);
+renderer.render(scene, camera);
+</pre>
+renderer とは「render する者」である。普通は WebGLRenderer を作成する。
+antialias プロパティを true にすると物体の輪郭のギザギザを減らす。
+これは輪郭の場所において、物体の色と背景の色を混ぜ合わせることにより行う。
+domElement プロパティ は render する場所、すなわち描画領域のことである。
+その描画領域を、appendChild メソッドを用いて canvas オブジェクトの内部としている。<br> 
+<li><b>いよいよ「描画」<b>
+<pre>
+renderer.render(scene, camera);
+</pre>
+render とは、仮想 3 次元空間における物体を、2 次元ディスプレィの画像に変換する事である。
+render メソッドには scene と camera を引数として渡す。
+</ol>
+
+<h3>● 全体構造のヴァリエーション</h4>
+<ul>
+<li>描画関数 draw を、head 部分で定義し、body 部分で実行する。
+<li>描画関数 draw を、body 部分で定義し、body 部分で実行する。
+<li>描画関数 draw を、head 部分で定義し、さらに head 部分に HTML 文書の読み込み（load）時に実行するイベントリスナーを書く。
+<pre>Window.addEventListener("load", draw());</pre>
+</ul>
+
+</body>
+</html>
+
